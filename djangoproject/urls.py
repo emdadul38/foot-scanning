@@ -33,4 +33,5 @@ urlpatterns = [
     
     path('api/professional/', views.ProfessionalView.as_view(), name='professional'),
     path('api/patient/', views.PatientView.as_view(), name='patient'),
+    path('api/patient/<int:pk>/', views.PatientView.as_view(), name='Patient Edit'),
 ]

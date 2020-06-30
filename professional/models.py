@@ -123,7 +123,7 @@ class Professional(models.Model):
     unit_size   = models.CharField(max_length=50, null=True)
     unit_weight = models.CharField(max_length=50, null=True)
     user_type   = models.CharField(max_length=30, choices=USER_TYPE, default='Practitioner',)   
-    
+        
     def __str__(self):
         return f"{self.user.first_name} {self.user.middle_name} {self.user.last_name}" 
 
@@ -133,5 +133,8 @@ class Patient(models.Model):
     height       = models.PositiveIntegerField()
     weight       = models.PositiveIntegerField()
     
+    REQUIRED_FIELDS = [ 'user', 'practitioner', 'height', 'weight',]  
+    
     def __str__(self):
         return self.user.email
+    
