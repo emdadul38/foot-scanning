@@ -24,6 +24,7 @@ router.register(r'organization', views.OrganizationView, 'Organization')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path(r'', include(router.urls)),
     
     # Your URLs
     path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),

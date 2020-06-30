@@ -23,7 +23,6 @@ class CustomUserAdmin(UserAdmin):
         }),
         ('Personal Info', {'fields': ('first_name', 'middle_name', 'last_name', 'gender', 'birth_date', 'phone', 'organization',  'shipping_address', 'billing_address', )}),
         ('Permissions', {'fields': ('is_admin', 'is_staff',)}),
-        ('Address', {'fields': ()}),
     ]
     
     list_display = ('email', 'username', 'first_name', 'middle_name', 'last_name', 'gender', 'birth_date', 'phone',  'organization', 'is_admin', 'is_staff')
