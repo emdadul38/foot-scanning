@@ -43,19 +43,30 @@ class PatientView(APIView):
     
     def get(self, request):
         user_id = request.user.id
-        queryset = Patient.objects.filter(practitioner=user_id,)
-        serializer = PatientSerializer(queryset, many=True)
         
+        organization_id = request.user.organization_id
+        professional = Professional.objects.get(user=user_id)
+        if professional.user_type == 'Staff':
+            print('Staff')
+            # Here filter condition within organization of authenticate user's 
+            queryset = Patient.objects.filter(user__organization=organization_id)
+            serializer = PatientSerializer(queryset, many=True)            
+        else:
+            # Here only practitioner Id
+            queryset = Patient.objects.filter(practitioner=professional.id,)
+            serializer = PatientSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+            
+        
     
     def post(self, request, *args, **kwargs):
+        organization_id = request.user.organization_id
         serializer = UserSerializer(data=request.data)
         p_serializer = PatientSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True) and p_serializer.is_valid(raise_exception=True):
             data = request.data
             shipping_address_id = None
             billing_address_id = None
-            organization_id = None
             
                 
             if 'shipping_address' in data:
@@ -69,10 +80,7 @@ class PatientView(APIView):
                 billing_address.save()
                 billing_address_serializer = AddressSerializer(billing_address)
                 billing_address_id = billing_address.id
-            
-            if 'organization' in data:
-                organization_id = data['organization']
-                
+                            
             new_patient_user = User.objects.create(email= data['email'], username= data['username'], first_name= data['first_name'], middle_name= data['middle_name'], last_name= data['last_name'], gender= data['gender'], birth_date= data['birth_date'], phone= data['phone'], shipping_address= Address.objects.get(id=shipping_address_id), billing_address = Address.objects.get(id=billing_address_id), organization = Organization.objects.get(id=organization_id))
         
             users_serializer = UserSerializer(new_patient_user)               
