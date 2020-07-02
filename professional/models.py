@@ -6,7 +6,7 @@ from django.contrib.auth.models import (
 # Create your models here.
 class Address(models.Model):
     street_1    = models.CharField(max_length=255, null=True)
-    street_2    = models.CharField(max_length=255, null=True)
+    street_2    = models.CharField(max_length=255, null=True, blank=True)
     city        = models.CharField(max_length=100, null=True)
     zipcode     = models.CharField(max_length=50)
     country     = models.CharField(max_length=100)
@@ -14,6 +14,7 @@ class Address(models.Model):
     def __str__(self):
         return 'Street_1: %s, Street_2: %s, City: %s, Country: %s, %s ' %(self.street_1, self.street_2, self.city, self.city, self.country)
     
+    REQUIRED_FIELDS = [ 'street_1', 'city', 'zipcode', 'country',] 
 
 class Organization(models.Model):
     name    = models.CharField(max_length=255, unique=True)
@@ -78,12 +79,16 @@ class UserManager(BaseUserManager):
         return user 
     
 class User(AbstractBaseUser):
+    GENDER_OPTION = (
+        ('male', 'Male'),
+        ('female', 'Female')
+    )
     email 					= models.EmailField(verbose_name="email", max_length=60, unique=True)
     username                = models.CharField(max_length=30, unique=True, null=True, blank= True)
     first_name 				= models.CharField(max_length=255, unique=False)
     middle_name 			= models.CharField(max_length=255, unique=False, blank=True)
     last_name 				= models.CharField(max_length=255, unique=False)
-    gender 				    = models.CharField(max_length=255, unique=False)
+    gender 				    = models.CharField(max_length=6, choices=GENDER_OPTION, default='male')
     birth_date 				= models.DateField(verbose_name=None, auto_now=False)
     phone                   = models.CharField(max_length=50, null=True)
     organization            = models.ForeignKey(Organization, on_delete=models.SET_NULL, null=True)
@@ -118,11 +123,21 @@ class Professional(models.Model):
         ('Practitioner', 'Practitioner'),
         ('Staff', 'Staff'),
     )
+    
+    SIZE_UNIT = (
+        ('meter', 'Meter'),
+        ('foot', 'Foot'),
+    )
+    
+    WEIGHT_UNIT = (
+        ('kg', 'kg'),
+        ('lb', 'lb'),
+    )
+    
     user        = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    facility    = models.TextField(blank=True, null=True)
-    unit_size   = models.CharField(max_length=50, null=True)
-    unit_weight = models.CharField(max_length=50, null=True)
-    user_type   = models.CharField(max_length=30, choices=USER_TYPE, default='Practitioner',)   
+    unit_size   = models.CharField(max_length=10, choices=SIZE_UNIT, default='meter')
+    weight_unit = models.CharField(max_length=2, choices=WEIGHT_UNIT, default='kg')
+    user_type   = models.CharField(max_length=15, choices=USER_TYPE, default='Practitioner',)   
         
     def __str__(self):
         return f"{self.user.first_name} {self.user.middle_name} {self.user.last_name}" 

@@ -44,7 +44,7 @@ class CustomOrganization(admin.ModelAdmin):
     fieldsets = ()
 
 class CustomProfessional(admin.ModelAdmin):
-    list_display = ['id', 'user', 'facility', 'unit_size', 'unit_weight', 'user_type']
+    list_display = ['id', 'user', 'unit_size', 'weight_unit', 'user_type']
     search_fields = ['user']
     
     filter_horizontal = ()
