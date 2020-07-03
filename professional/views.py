@@ -123,3 +123,13 @@ class PatientView(APIView):
                 ]
             }
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
+        
+    def delete(self, request, pk, format=None):
+        # find user_id
+        patient_snippet = self.get_patient_object(pk)
+        user_snippet = self.get_user_object(patient_snippet.user_id)
+        
+        patient_snippet.delete()
+        user_snippet.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+        
