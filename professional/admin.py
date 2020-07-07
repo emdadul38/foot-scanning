@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.forms import ModelForm
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserCreationForm
-from professional.models import (User, Organization, Address, Professional, Patient)
+from professional.models import (User, Organization, Address, Professional, Patient, Album, Scan)
 
 
 # Register your models here.
@@ -63,8 +63,18 @@ class CustomPatient(admin.ModelAdmin):
     list_filter = ['user', 'practitioner']
     fieldsets = ()
 
+class CustomAlbum(admin.ModelAdmin):
+    list_display = ['name', 'patient', 'created_by', 'date_created']
+    list_filter = ['patient']
+
+class CustomScan(admin.ModelAdmin):
+    list_display = ['name', 'album', 'scan_type']
+    list_filter = ['album']
+    
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(Organization, CustomOrganization)
 admin.site.register(Address, CustomAddress)
 admin.site.register(Professional, CustomProfessional)
 admin.site.register(Patient, CustomPatient)
+admin.site.register(Album, CustomAlbum)
+admin.site.register(Scan, CustomScan)

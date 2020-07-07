@@ -152,4 +152,25 @@ class Patient(models.Model):
     
     def __str__(self):
         return self.user.email
+
+class Album(models.Model):
+    name    = models.CharField(max_length=255)
+    patient = models.ForeignKey(Patient, on_delete=models.SET_NULL, null=True, related_name='patient')
+    created_by = models.ForeignKey(Professional, on_delete=models.SET_NULL, null=True, blank=True, related_name='professional')
+    date_created = models.DateTimeField(verbose_name='date created', auto_now_add=False)
     
+    def __str__(self):
+        return self.name
+    
+class Scan(models.Model):
+    SCAN_TYPE = (
+        ('foot', 'Foot'),
+        ('ulcer', 'Ulcer')
+    )
+    
+    name    = models.CharField(max_length=255)
+    album   = models.ForeignKey(Album, on_delete=models.CASCADE, related_name='album')
+    scan_type = models.CharField(max_length=10, choices=SCAN_TYPE, default='foot')
+    
+    def __str__(self):
+        return self.name
