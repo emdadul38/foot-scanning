@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Organization, Professional, Patient, User, Address
+from .models import Organization, Professional, Patient, User, Address, Album, Scan
 
 class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -62,3 +62,15 @@ class PatientSerializer(serializers.ModelSerializer):
         # user = UserSerializer.create(UserSerializer(), validated_data=user_data)
         # patient, created = Patient.objects.update_or_create(user=user, height=validated_data.pop('height'), weight=validated_data.pop('weight'), practitioner=validated_data.pop('practitioner'))
         return 'OK'
+
+class AlbumSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Album
+        fields = "__all__"
+        depth = 1
+
+class ScanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Scan
+        fields = "__all__"
+        depth = 1

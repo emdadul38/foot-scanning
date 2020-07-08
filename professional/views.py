@@ -6,8 +6,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
-from .models import Organization, Professional, Patient, User, Address
-from .serializers import OrganizationSerializer, ProfessionalSerializer, PatientSerializer, UserSerializer, AddressSerializer
+from .models import Organization, Professional, Patient, User, Address, Album, Scan
+from .serializers import OrganizationSerializer, ProfessionalSerializer, PatientSerializer, UserSerializer, AddressSerializer, AlbumSerializer, ScanSerializer
 
 # Create your views here.
 
@@ -131,5 +131,87 @@ class PatientView(APIView):
         
         patient_snippet.delete()
         user_snippet.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+        
+class AlbumView(APIView):
+    permission_classes = (IsAuthenticated,)
+    
+    def get_album_object(self, pk):
+        try:
+            return Album.objects.get(pk=pk)
+        except Album.DoesNotExist:
+            raise Http404
+        
+    def get(self, request):
+        queryset = Album.objects.all()
+        serializer = AlbumSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request, *args, **kwargs):
+        serializer = AlbumSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            data = request.data
+            print(data["created_by"])
+            last_album = None
+            if 'created_by' in data:
+                created_by = data["created_by"]
+                last_album = Album.objects.create(name=data['name'], date_created= data["date_created"], patient= Patient.objects.get(id=data["patient"]), created_by= Professional.objects.get(id=created_by))
+            else:
+                last_album = Album.objects.create(name=data['name'], date_created= data["date_created"], patient= Patient.objects.get(id=data["patient"]))
+            
+            serializer_data = AlbumSerializer(last_album)
+            return Response(serializer_data.data, status=status.HTTP_201_CREATED)
+            
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def put(self, request, pk, format=None):
+        album_snippet = self.get_album_object(pk)
+        album_serializer = AlbumSerializer(album_snippet, data=request.data)
+        if album_serializer.is_valid():
+            album_serializer.save()
+            return Response(album_serializer.data)
+        return Response(album_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, pk, format=None):
+        album_snippet = self.get_album_object(pk)
+        album_snippet.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class ScanView(APIView):
+    permission_classes = (IsAuthenticated,)
+    
+    def get_scan_object(self, pk):
+        try:
+            return Scan.objects.get(pk=pk)
+        except Scan.DoesNotExist:
+            raise Http404
+        
+    def get(self, request):
+        queryset = Scan.objects.all()
+        serializer = ScanSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request, *args, **kwargs):
+        serializer = ScanSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            data = request.data
+            new_scan = Scan.objects.create(name=data['name'], scan_type= data["scan_type"], album= Album.objects.get(id=data["album"]))
+            serializer_data = ScanSerializer(new_scan)
+            return Response(serializer_data.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def put(self, request, pk, format=None):
+        scan_snippet = self.get_scan_object(pk)
+        scan_serializer = ScanSerializer(scan_snippet, data=request.data)
+        if scan_serializer.is_valid():
+            scan_serializer.save()
+            return Response(scan_serializer.data)
+            
+        return Response(scan_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, pk, format=None):
+        scan_snippet = self.get_scan_object(pk)
+        scan_snippet.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
         

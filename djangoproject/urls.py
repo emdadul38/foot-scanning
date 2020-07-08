@@ -34,6 +34,12 @@ urlpatterns = [
     path('api/professional/', views.ProfessionalView.as_view(), name='professional'),
     path('api/patient/', views.PatientView.as_view(), name='patient'),
     path('api/patient/<int:pk>/', views.PatientView.as_view(), name='Patient Edit'),
+    
+    path('api/album/', views.AlbumView.as_view(), name='Album'),
+    path('api/album/<int:pk>/', views.AlbumView.as_view(), name='Album Edit'),
+    
+    path('api/scan/', views.ScanView.as_view(), name='Scan'),
+    path('api/scan/<int:pk>/', views.ScanView.as_view(), name='Scan Edit'),
 ]
 
 
