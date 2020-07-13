@@ -12,6 +12,14 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 import datetime
+import environ
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+# reading .env file
+environ.Env.read_env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,7 +32,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '@*0&#gh^!nj8s^qumg6m7wr5%4x*fb6mt6wxte55zl&uqc_k1r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['127.0.0.1', '54.215.13.234']
 
@@ -40,6 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'professional',
     'rest_framework',
+    
+    'storages',
 ]
 
 AUTH_USER_MODEL = 'professional.User'       #changes the built-in user model to our
@@ -82,8 +92,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'foot_scanning_db',
-        'USER': 'postgres',
-        'PASSWORD': '123456',
+        'USER': env("PG_USER"),
+        'PASSWORD': env("PG_PASSWORD"),
         'HOST': 'localhost',
         'PORT': '5432'
     }
@@ -110,6 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = ( 'django.contrib.auth.backends.ModelBackend',  )
 
+#  REST Framework setting 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -117,6 +128,7 @@ REST_FRAMEWORK = {
     ],
 }
 
+#  Simple JWT setting 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=1440),
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
@@ -141,3 +153,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# AWS settings
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_DEFAULT_ACL = None
+
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME')
+AWS_LOCATION = 'uploads'
+AWS_S3_FILE_OVERWRITE = False

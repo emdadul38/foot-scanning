@@ -68,7 +68,7 @@ class CustomAlbum(admin.ModelAdmin):
     list_filter = ['patient']
 
 class CustomScan(admin.ModelAdmin):
-    list_display = ['name', 'album', 'scan_type']
+    list_display = ['name', 'album', 'scan_type', 'file_url']
     list_filter = ['album']
     
 admin.site.register(User, CustomUserAdmin)

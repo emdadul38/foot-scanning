@@ -1,3 +1,4 @@
 # Django #
 __pycache__
 projectenv/
+.env

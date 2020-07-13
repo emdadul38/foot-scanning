@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import FileExtensionValidator
 from django.contrib.auth.models import (
     AbstractBaseUser, BaseUserManager
 )
@@ -171,6 +172,7 @@ class Scan(models.Model):
     name    = models.CharField(max_length=255)
     album   = models.ForeignKey(Album, on_delete=models.CASCADE, related_name='album')
     scan_type = models.CharField(max_length=10, choices=SCAN_TYPE, default='foot')
+    file_url = models.FileField(blank=False, validators=[FileExtensionValidator(allowed_extensions=['obj'])])
     
     def __str__(self):
         return self.name

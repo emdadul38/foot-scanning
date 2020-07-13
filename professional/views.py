@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
+from rest_framework.parsers import MultiPartParser, FormParser
 from .models import Organization, Professional, Patient, User, Address, Album, Scan
 from .serializers import OrganizationSerializer, ProfessionalSerializer, PatientSerializer, UserSerializer, AddressSerializer, AlbumSerializer, ScanSerializer
 
@@ -193,15 +194,18 @@ class ScanView(APIView):
     
     def post(self, request, *args, **kwargs):
         serializer = ScanSerializer(data=request.data)
+        parser_classes = (MultiPartParser, FormParser)
+        # print(request.data)
         if serializer.is_valid(raise_exception=True):
             data = request.data
-            new_scan = Scan.objects.create(name=data['name'], scan_type= data["scan_type"], album= Album.objects.get(id=data["album"]))
+            new_scan = Scan.objects.create(name=data['name'], scan_type= data["scan_type"], file_url= data['file_url'], album= Album.objects.get(id=data["album"]))
             serializer_data = ScanSerializer(new_scan)
             return Response(serializer_data.data, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def put(self, request, pk, format=None):
+        parser_classes = (MultiPartParser, FormParser)
         scan_snippet = self.get_scan_object(pk)
         scan_serializer = ScanSerializer(scan_snippet, data=request.data)
         if scan_serializer.is_valid():
