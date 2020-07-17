@@ -1,0 +1,240 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv=“Access-Control-Allow-Origin” content=“*”>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>foot-scanning-browser</title>
+
+	<!-- Global stylesheets -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+	<script src="{% static 'js/jquery.min.js' %}"></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<script src="https://preview.babylonjs.com/viewer/babylon.viewer.js"></script>
+
+	<link href="{% static 'css/icon-styles.css' %}" rel="stylesheet" type="text/css">
+	<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+	<link href="{% static 'css/bootstrap_limitless.min.css' %}" rel="stylesheet" type="text/css">
+	<link href="{% static 'css/layout.min.css' %}" rel="stylesheet" type="text/css">
+	<!-- <link href="{% static 'css/components.min.css" rel="stylesheet" type="text/css"> -->
+	<link href="{% static 'css/colors.min.css' %}" rel="stylesheet" type="text/css">
+
+	<!-- /global stylesheets -->
+	<script type="text/javascript">
+		window.onload = async function() {
+			//run js code here
+			let headers = new Headers();
+			// headers.append('Content-Type', 'application/json');
+			headers.append('Accept', 'application/json');
+
+			headers.append('Access-Control-Allow-Origin', '*');
+			// headers.append('Access-Control-Allow-Credentials', 'true');
+
+			fetch("https://s6v4l5ubbj.execute-api.us-east-1.amazonaws.com/v1/get-foot-scanning", {
+				method: 'GET',
+				// mode: 'cors',
+				// headers: headers
+			})
+			.then((response) => response.json())
+			.then((data) => {
+				// console.log(data);
+				let response_data = data['body'];
+				let list = '';
+				response_data.forEach((element, i) => {					
+					list += `<div class="col-xl-2 col-sm-4">
+								<div class="card card-radius">
+									<div class="card-body">
+										<div class="card-img-actions">
+											<!-- <a href="Group 1@2x.png" data-popup="lightbox"> -->
+												<img src="{% static 'image/Group 1@2x.png' %}" class="card-img" width="96" alt="">
+												<span class="card-img-actions-overlay card-img">
+													<i class="icon-plus3 icon-2x"></i>
+												</span>
+											<!-- </a> -->
+										</div>
+									</div>
+
+									<div class="card-body text-center" style="border-top: 0px;">
+										<div class="mb-2">
+											<h6 class="font-weight-semibold mb-0">
+												Name: ${element.file_name}
+											</h6>
+											<h6 class="font-weight-semibold mb-0">
+												Date: ${element.timestamp}
+											</h6>
+										</div>										
+										<button type="button" class="btn bg-teal-420 product_list" id="p_${i}"  attr-url ="${element.url}" >Open <span class="loading_p_${i}"></span></button>
+									</div>
+								</div>
+							</div>`;
+				});
+				// list +="</ul>";
+				$("#product_list").html(list)
+			})
+			.catch((error) => {
+				console.log(`Error: ${error}`);
+			});
+		}
+	</script>
+
+</head>
+<!-- #79C248 -->
+<body class="sidebar-xs">
+
+
+	<!-- Page content -->
+	<div class="page-content">
+
+
+		<!-- Main content -->
+		<div class="content-wrapper">
+
+			<!-- Content area -->
+			<div class="content">
+
+				<!-- Inner container -->
+				<div class="d-flex align-items-start flex-column flex-md-row">
+
+					<!-- Left content -->
+					<div class="w-100 overflow-auto order-2 order-md-1">
+						<div class="row">
+							<div class="col-xl-12" style="height: 500px; padding-left: 13px; padding-right: 13px; padding-top: 10px;">
+								<!-- <span id="stl_cont" style="width: 100%; height: 100%; padding: 20px;"> -->
+									<!-- <img src="Rectangle 5@2x.png" alt="Main Image" style="width: 100%;"> -->
+								<!-- </span> -->
+								<canvas id="renderCanvas" style="width:100%; height: 475px; border:1px solid darkgrey"></canvas>
+							</div>
+						</div>
+						<!-- Grid -->
+						<div class="row" id="product_list"></div>
+						<!-- /grid -->
+					</div>
+					<!-- /left content -->
+
+				</div>
+				<!-- /inner container -->
+
+			</div>
+			<!-- /content area -->
+
+		</div>
+		<!-- /main content -->
+
+	</div>
+	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+	<script src="{% static 'js/jquery.bootpag.min.js' %}"></script>
+	<script>
+		$('#pagination-here').bootpag({
+			total: 10,          
+			page: 1,            
+			maxVisible: 5,     
+			leaps: true,
+			href: "#result-page-{{number}}",
+		})
+
+		//page click action
+		$('#pagination-here').on("page", function(event, num){
+			//show / hide content or pull via ajax etc
+			$("#content").html("Page " + num); 
+		});
+
+		$(document).on('click', '.product_list', function (){
+			let product = $(this).attr('id');
+			console.log(product)
+			$(".loading_"+product).text('Loading..');
+			
+			let url = $(this).attr('attr-url');
+					// get the canvas DOM element
+			var canvas = document.getElementById('renderCanvas');
+
+			// console.log(canvas);
+			// load the 3D engine
+			var engine = new BABYLON.Engine(canvas, true);
+
+			// createScene function that creates and return the scene
+			var createScene = function () {
+				var scene = new BABYLON.Scene(engine);
+
+				//Adding a light
+				var light = new BABYLON.PointLight("Omni", new BABYLON.Vector3(20, 20, 300), scene);
+
+				//Adding an Arc Rotate Camera
+				var camera = new BABYLON.ArcRotateCamera("Camera", 4, 1, 20, BABYLON.Vector3.Zero(), scene);
+				camera.attachControl(canvas, false);
+
+				var assetsManager = new BABYLON.AssetsManager(scene);
+				var meshTask = assetsManager.addMeshTask("", "", "", url);
+				
+				meshTask.onSuccess = function (task) {
+					task.loadedMeshes[0].position = BABYLON.Vector3.Zero();
+				}	
+
+				// Move the light with the camera
+				// scene.registerBeforeRender(function () {
+				// 	light.position = camera.position;
+				// });
+				
+				assetsManager.onFinish = function (tasks) {
+					$(".loading_"+product).text('');
+					engine.runRenderLoop(function () {
+						scene.render();
+					});
+				};
+				
+				assetsManager.load();
+				
+				return scene;
+			};
+
+			BABYLON.DefaultLoadingScreen.prototype.displayLoadingUI = function () {
+				
+					if (document.getElementById("renderCanvas")) {
+						// Do not add a loading screen if there is already one
+						document.getElementById("renderCanvas").style.display = "initial";
+						return;
+					}
+					this._loadingDiv = document.createElement("div");
+					this._loadingDiv.id = "renderCanvas";
+					this._loadingDiv.innerHTML = "scene is currently loading";
+					var customLoadingScreenCss = document.createElement('style');
+					customLoadingScreenCss.type = 'text/css';
+					customLoadingScreenCss.innerHTML = `
+					#renderCanvas {
+						background-color: #BB464Bcc;
+						color: black;
+						font-size:50px;
+						text-align:center;
+					}
+					`;
+					document.getElementsByTagName('head')[0].appendChild(customLoadingScreenCss);
+					this._resizeLoadingUI();
+					window.addEventListener("resize", this._resizeLoadingUI);
+					document.body.appendChild(this._loadingDiv);
+				};
+
+				BABYLON.DefaultLoadingScreen.prototype.hideLoadingUI = function(){
+					document.getElementById("renderCanvas").style.display = "block";
+					console.log("scene is now loaded");
+				}
+
+			// call the createScene function
+			var scene = createScene();
+			scene.clearColor = new BABYLON.Color3(1, 1, 1);
+			
+			// run the render loop
+			engine.runRenderLoop(function(){
+				scene.render();
+			});
+
+			// the canvas/window resize event handler
+			window.addEventListener('resize', function(){
+				engine.resize();
+			});
+			
+		})
+	</script>
+</body>
+</html>

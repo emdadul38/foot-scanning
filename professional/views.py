@@ -1,4 +1,5 @@
 from rest_framework import status
+from django.http import HttpResponse
 from django.core.serializers import serialize 
 from django.http import Http404
 from django.shortcuts import render
@@ -218,4 +219,6 @@ class ScanView(APIView):
         scan_snippet = self.get_scan_object(pk)
         scan_snippet.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-        
+
+def home(request):
+    return render(request, 'home.html')
