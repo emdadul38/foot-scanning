@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
+from django.db.models import Q
 from rest_framework.parsers import MultiPartParser, FormParser
 from .models import Organization, Professional, Patient, User, Address, Album, Scan
 from .serializers import OrganizationSerializer, ProfessionalSerializer, PatientSerializer, UserSerializer, AddressSerializer, AlbumSerializer, ScanSerializer
@@ -215,6 +216,12 @@ class ScanView(APIView):
 
 def home(request):
     scan_list = Scan.objects.all()
+    query = request.GET.get('q')
+    if query:
+        scan_list = Scan.objects.filter(
+            Q(name__icontains=query)
+        ).distinct()
+        
     page = request.GET.get('page', 1)
     
     paginator = Paginator(scan_list, 6)

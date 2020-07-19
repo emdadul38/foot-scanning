@@ -111,6 +111,22 @@
 								<canvas id="renderCanvas" style="width:100%; height: 475px; border:1px solid darkgrey"></canvas>
 							</div>
 						</div>
+						<!-- Search box -->
+						<div class="row">
+							<div class="col-xl-12 col-sm-12" >
+								<form method="GET" >							
+									<div class="input-group " style="padding-bottom: 2.375rem; width: 100%;">
+										<input type="text" class="form-control" name="q" value="{{ request.GET.q }}" placeholder="Search this file ..">
+										<div class="input-group-append">
+										  <button class="btn btn-primary" type="submit" name="action">
+											<span class="glyphicon glyphicon-search">Search</span>
+										  </button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<!-- /search box -->
 						<!-- Grid -->
 						<div class="row" id="product_list">
 							{% for scan in scans %}
