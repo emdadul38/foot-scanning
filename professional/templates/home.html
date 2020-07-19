@@ -33,51 +33,52 @@
 			headers.append('Access-Control-Allow-Origin', '*');
 			// headers.append('Access-Control-Allow-Credentials', 'true');
 
-			fetch("https://s6v4l5ubbj.execute-api.us-east-1.amazonaws.com/v1/get-foot-scanning", {
-				method: 'GET',
-				// mode: 'cors',
-				// headers: headers
-			})
-			.then((response) => response.json())
-			.then((data) => {
-				// console.log(data);
-				let response_data = data['body'];
-				let list = '';
-				response_data.forEach((element, i) => {					
-					list += `<div class="col-xl-2 col-sm-4">
-								<div class="card card-radius">
-									<div class="card-body">
-										<div class="card-img-actions">
-											<!-- <a href="Group 1@2x.png" data-popup="lightbox"> -->
-												<img src="{% static 'image/Group 1@2x.png' %}" class="card-img" width="96" alt="">
-												<span class="card-img-actions-overlay card-img">
-													<i class="icon-plus3 icon-2x"></i>
-												</span>
-											<!-- </a> -->
-										</div>
-									</div>
+			// fetch("https://s6v4l5ubbj.execute-api.us-east-1.amazonaws.com/v1/get-foot-scanning", {
+			// 	method: 'GET',
+			// 	// mode: 'cors',
+			// 	// headers: headers
+			// })
+			// .then((response) => response.json())
+			// .then((data) => {
+			// 	// console.log(data);
+			// 	let response_data = data['body'];
+			// 	let list = '';
+			// 	response_data.forEach((element, i) => {					
+			// 		list += `<div class="col-xl-2 col-sm-4">
+			// 					<div class="card card-radius">
+			// 						<div class="card-body">
+			// 							<div class="card-img-actions">
+			// 								<!-- <a href="Group 1@2x.png" data-popup="lightbox"> -->
+			// 									<img src="{% static 'image/Group 1@2x.png' %}" class="card-img" width="96" alt="">
+			// 									<span class="card-img-actions-overlay card-img">
+			// 										<i class="icon-plus3 icon-2x"></i>
+			// 									</span>
+			// 								<!-- </a> -->
+			// 							</div>
+			// 						</div>
 
-									<div class="card-body text-center" style="border-top: 0px;">
-										<div class="mb-2">
-											<h6 class="font-weight-semibold mb-0">
-												Name: ${element.file_name}
-											</h6>
-											<h6 class="font-weight-semibold mb-0">
-												Date: ${element.timestamp}
-											</h6>
-										</div>										
-										<button type="button" class="btn bg-teal-420 product_list" id="p_${i}"  attr-url ="${element.url}" >Open <span class="loading_p_${i}"></span></button>
-									</div>
-								</div>
-							</div>`;
-				});
-				// list +="</ul>";
-				$("#product_list").html(list)
-			})
-			.catch((error) => {
-				console.log(`Error: ${error}`);
-			});
+			// 						<div class="card-body text-center" style="border-top: 0px;">
+			// 							<div class="mb-2">
+			// 								<h6 class="font-weight-semibold mb-0">
+			// 									Name: ${element.file_name}
+			// 								</h6>
+			// 								<h6 class="font-weight-semibold mb-0">
+			// 									Date: ${element.timestamp}
+			// 								</h6>
+			// 							</div>										
+			// 							<button type="button" class="btn bg-teal-420 product_list" id="p_${i}"  attr-url ="${element.url}" >Open <span class="loading_p_${i}"></span></button>
+			// 						</div>
+			// 					</div>
+			// 				</div>`;
+			// 	});
+			// 	// list +="</ul>";
+			// 	$("#product_list").html(list)
+			// })
+			// .catch((error) => {
+			// 	console.log(`Error: ${error}`);
+			// });
 		}
+
 	</script>
 
 </head>
@@ -87,7 +88,9 @@
 
 	<!-- Page content -->
 	<div class="page-content">
-
+    <!-- {% for scan in scan %}
+      <li>{{scan.name}} {{scan.file_url}}</li>
+    {% endfor%} -->
 
 		<!-- Main content -->
 		<div class="content-wrapper">
@@ -109,7 +112,63 @@
 							</div>
 						</div>
 						<!-- Grid -->
-						<div class="row" id="product_list"></div>
+						<div class="row" id="product_list">
+							{% for scan in scans %}
+							<div class="col-xl-2 col-sm-4">
+								<div class="card card-radius">
+									<div class="card-body">
+										<div class="card-img-actions">
+											<!-- <a href="Group 1@2x.png" data-popup="lightbox"> -->
+												<img src="{% static 'image/Group 1@2x.png' %}" class="card-img" width="96" alt="">
+												<span class="card-img-actions-overlay card-img">
+													<i class="icon-plus3 icon-2x"></i>
+												</span>
+											<!-- </a> -->
+										</div>
+									</div>
+
+									<div class="card-body text-center" style="border-top: 0px;">
+										<div class="mb-2">
+											<h6 class="font-weight-semibold mb-0">
+												Name: {{scan.name}}
+											</h6>
+											<h6 class="font-weight-semibold mb-0">
+												<!-- Date: ${element.timestamp} -->
+											</h6>
+										</div>										
+										<button type="button" class="btn bg-teal-420 product_list" id="p_{{ forloop.counter0 }}"  attr-url ="https://foot-scanning-api.s3.amazonaws.com/uploads/{{scan.file_url}}" >Open <span class="loading_p_{{ forloop.counter0 }}"></span></button>
+									</div>
+								</div>
+							</div>
+							{% endfor%}
+						</div>
+						<nav aria-label="...">
+							{% if scans.has_other_pages %}
+							<ul class="pagination justify-content-center">
+								{% if scans.has_previous %}
+								<li class="page-item">
+									<a class="page-link" href="?page={{ scans.previous_page_number }}">Previous</a>
+								</li>
+								{% else %}
+								<li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+								{% endif %}
+								{% for i in scans.paginator.page_range %}
+								{% if scans.number == i %}
+									<li class="page-item active"><a class="page-link">{{ i }} <span class="sr-only">(current)</span></a></li>
+								{% else %}
+								<li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+								{% endif %}
+								{% endfor %}
+								{% if scans.has_next %}
+								<li class="page-item">
+									<a class="page-link" href="?page={{ scans.next_page_number }}">Next</a>
+								  </li>
+								{% else %}
+								<li class="page-item  disabled"><a class="page-link" href="#">Next</a></li>
+								{% endif %}
+							</ul>
+							{% endif %}
+						</nav>
 						<!-- /grid -->
 					</div>
 					<!-- /left content -->

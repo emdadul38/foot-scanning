@@ -10,6 +10,7 @@ from rest_framework import viewsets
 from rest_framework.parsers import MultiPartParser, FormParser
 from .models import Organization, Professional, Patient, User, Address, Album, Scan
 from .serializers import OrganizationSerializer, ProfessionalSerializer, PatientSerializer, UserSerializer, AddressSerializer, AlbumSerializer, ScanSerializer
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Create your views here.
 
@@ -48,18 +49,10 @@ class PatientView(APIView):
         
         organization_id = request.user.organization_id
         professional = Professional.objects.get(user=user_id)
-        if professional.user_type == 'Staff':
-            print('Staff')
-            # Here filter condition within organization of authenticate user's 
-            queryset = Patient.objects.filter(user__organization=organization_id)
-            serializer = PatientSerializer(queryset, many=True)            
-        else:
-            # Here only practitioner Id
-            queryset = Patient.objects.filter(practitioner=professional.id,)
-            serializer = PatientSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-            
-        
+        # Here filter condition within organization of authenticate user's 
+        queryset = Patient.objects.filter(user__organization=organization_id)
+        serializer = PatientSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)                    
     
     def post(self, request, *args, **kwargs):
         organization_id = request.user.organization_id
@@ -221,4 +214,16 @@ class ScanView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 def home(request):
-    return render(request, 'home.html')
+    scan_list = Scan.objects.all()
+    page = request.GET.get('page', 1)
+    
+    paginator = Paginator(scan_list, 6)
+    
+    try:
+        scans = paginator.page(page)
+    except PageNotAnInteger:
+        scans = paginator.page(1)
+    except EmptyPage:
+        scans = paginator.page(paginator.num_pages)
+    # serializer = ScanSerializer(queryset, many=True)
+    return render(request, 'home.html', { 'scans': scans })
