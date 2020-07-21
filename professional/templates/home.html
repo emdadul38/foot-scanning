@@ -10,10 +10,10 @@
 	<title>foot-scanning-browser</title>
 
 	<!-- Global stylesheets -->
-	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+	<!-- <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css"> -->
 	<script src="{% static 'js/jquery.min.js' %}"></script>
 	<script src="{% static 'js/bootstrap.min.js' %}"></script>
-	<script src="https://preview.babylonjs.com/viewer/babylon.viewer.js"></script>
+	<script src="{% static 'js/babylon.viewer.js' %}"></script>
 
 	<link href="{% static 'css/icon-styles.css' %}" rel="stylesheet" type="text/css">
 	<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
@@ -21,63 +21,6 @@
 	<link href="{% static 'css/layout.min.css' %}" rel="stylesheet" type="text/css">
 	<!-- <link href="{% static 'css/components.min.css" rel="stylesheet" type="text/css"> -->
 	<link href="{% static 'css/colors.min.css' %}" rel="stylesheet" type="text/css">
-
-	<!-- /global stylesheets -->
-	<script type="text/javascript">
-		window.onload = async function() {
-			//run js code here
-			let headers = new Headers();
-			// headers.append('Content-Type', 'application/json');
-			headers.append('Accept', 'application/json');
-
-			headers.append('Access-Control-Allow-Origin', '*');
-			// headers.append('Access-Control-Allow-Credentials', 'true');
-
-			// fetch("https://s6v4l5ubbj.execute-api.us-east-1.amazonaws.com/v1/get-foot-scanning", {
-			// 	method: 'GET',
-			// 	// mode: 'cors',
-			// 	// headers: headers
-			// })
-			// .then((response) => response.json())
-			// .then((data) => {
-			// 	// console.log(data);
-			// 	let response_data = data['body'];
-			// 	let list = '';
-			// 	response_data.forEach((element, i) => {					
-			// 		list += `<div class="col-xl-2 col-sm-4">
-			// 					<div class="card card-radius">
-			// 						<div class="card-body">
-			// 							<div class="card-img-actions">
-			// 								<!-- <a href="Group 1@2x.png" data-popup="lightbox"> -->
-			// 									<img src="{% static 'image/Group 1@2x.png' %}" class="card-img" width="96" alt="">
-			// 									<span class="card-img-actions-overlay card-img">
-			// 										<i class="icon-plus3 icon-2x"></i>
-			// 									</span>
-			// 								<!-- </a> -->
-			// 							</div>
-			// 						</div>
-
-			// 						<div class="card-body text-center" style="border-top: 0px;">
-			// 							<div class="mb-2">
-			// 								<h6 class="font-weight-semibold mb-0">
-			// 									Name: ${element.file_name}
-			// 								</h6>
-			// 								<h6 class="font-weight-semibold mb-0">
-			// 									Date: ${element.timestamp}
-			// 								</h6>
-			// 							</div>										
-			// 							<button type="button" class="btn bg-teal-420 product_list" id="p_${i}"  attr-url ="${element.url}" >Open <span class="loading_p_${i}"></span></button>
-			// 						</div>
-			// 					</div>
-			// 				</div>`;
-			// 	});
-			// 	// list +="</ul>";
-			// 	$("#product_list").html(list)
-			// })
-			// .catch((error) => {
-			// 	console.log(`Error: ${error}`);
-			// });
-		}
 
 	</script>
 
