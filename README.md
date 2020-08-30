@@ -29,7 +29,6 @@ On Windows:
 5. Migrate the database.
 
 ```python
-(venv)$ cd foot-scanning
 (venv)$ python manage.py migrate
 ```
 
@@ -39,7 +38,7 @@ On Windows:
 (venv)$ python manage.py createsuperuser
 ```
 
-6. Run Server
+6. Run the local Server
 ```python
 (venv)$ cd myproject
 (venv)$ python manage.py runserver
