@@ -43,5 +43,8 @@ On Windows:
 (venv)$ cd myproject
 (venv)$ python manage.py runserver
 ```
+## Done
+http://127.0.0.1:8000/admin
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
