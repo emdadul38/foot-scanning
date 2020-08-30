@@ -10,14 +10,15 @@ https://github.com/emdadul38/foot-scanning.git
 cd foot-scanning
 ```
 3. Create a new virtual environment using Python 3.7 and activate it.
-On Linux:
+
 ```python
+On Linux:
+
 $ Python -m venv projectven
-$ . venv/bin/activate
-```
+$ source projectven/bin/activate
 
 On Windows:
-```python
+
 > Python -m venv projectven
 > venv/Scripts/activate
 ```
