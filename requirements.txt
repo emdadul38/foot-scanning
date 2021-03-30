@@ -29,7 +29,7 @@ mccabe==0.6.1
 psycopg2-binary==2.8.5
 pycosat==0.6.3
 pycparser==2.19
-Pygments==2.6.1
+Pygments==2.7.4
 PyJWT==1.7.1
 pylint==2.4.4
 PyMySQL==0.9.3
