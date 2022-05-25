@@ -30,7 +30,7 @@ psycopg2-binary==2.8.5
 pycosat==0.6.3
 pycparser==2.19
 Pygments==2.6.1
-PyJWT==1.7.1
+PyJWT==2.4.0
 pylint==2.4.4
 PyMySQL==0.9.3
 pyOpenSSL==19.1.0
